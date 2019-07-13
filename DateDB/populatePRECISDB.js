@@ -6,54 +6,6 @@ var util = require('util');
 
 const testFolder = './Date PRECIS/';
 
-// // Connection URL
-// const url = 'mongodb://localhost:27017';
-
-// // Database Name
-// const dbName = 'myDB';
-
-// // Create a new MongoClient
-// const client = new MongoClient(url);
-
-// //Promise
-
-// async function main() {
-//     try {
-//         console.log("inainte");
-//         await client.connect();
-//         const db = client.db(dbName);
-//         const collection = db.collection('myCollection');
-
-//         // const res = await collection.find({
-//         //     // "nume": "Sterian"
-//         // }).project({_id: 0}).toArray();
-//         // res.forEach( element => {
-//         //     console.log(element);
-//         // })
-//         const tolerance = 6;
-//         const res = await collection.find({
-//             semnal1: {
-//                 $gt: 98 - tolerance,
-//                 $lt: 98 + tolerance
-//             },
-//             semnal2: {
-//                 $gt: 48 - tolerance,
-//                 $lt: 48 + tolerance
-//             },
-//             semnal3: {
-//                 $gt: 55 - tolerance,
-//                 $lt: 55 + tolerance
-//             }
-//         }).toArray();
-//         console.log(res);
-//         client.close();
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
-// main();
-
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
  

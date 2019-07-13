@@ -25,6 +25,8 @@ async function main() {
         const collection = db.collection('fingerprints');
         const collectionLIFS = db.collection('fingerprintsLIFS');
 
+        console.time('test');
+
         var tolerance = 0;
         var res = [];
 
@@ -57,6 +59,8 @@ async function main() {
             resLIFS = await collectionLIFS.find(query).toArray();
             tolerance++;
         } while(resLIFS.length == 0);
+
+        console.timeEnd('test');
 
         console.log("Locatia este: lat: " + res[0].lat + ", lng: " + res[0].lng);
         console.log("Locatia conform LIFS este: lat: " + resLIFS[0].lat + ", lng: " + resLIFS[0].lng);

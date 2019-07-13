@@ -1,3 +1,4 @@
+console.time('test');
 const fs = require('fs');
 var xml2js = require('xml2js');
 var util = require('util');
@@ -17,45 +18,36 @@ const client = new MongoClient(url);
  
 var parser = new xml2js.Parser();
 
-fs.readFile('./Input Data/path.xml', function(err, data) {
-    parser.parseString(data, function (err, result) {
-        var dataSet = [];
-        var locations = [];
-        var wr = result['data']['wr'];
-        var loc = result['data']['loc'];
+let data = fs.readFileSync('./Input Data/path.xml');
+parser.parseString(data, function (err, result) {
+    var dataSet = [];
+    var locations = [];
+    var wr = result['data']['wr'];
+    var loc = result['data']['loc'];
 
-        //Loop through JSON obtained from XML file and create a new JSON object with the info i need
-        for (var i in loc) {
-            var obj = {};
-            var l = {};
+    //Loop through JSON obtained from XML file and create a new JSON object with the info i need
+    for (var i in loc) {
+        var obj = {};
+        var l = {};
 
-            //Latitude and Longitude
-            l.lat = loc[i]['$'].lat;
-            l.lng = loc[i]['$'].lng;
+        //Latitude and Longitude
+        l.lat = loc[i]['$'].lat;
+        l.lng = loc[i]['$'].lng;
 
-            //APs signals
-            var signals = wr[i]['r'];
-            for (r in signals) {
-                obj[wr[i]['r'][r]['$'].b] = parseInt(wr[i]['r'][r]['$'].s, 10);
-            }
-
-            dataSet.push(obj);
-            locations.push(l);
-            //console.log(dataSet);
+        //APs signals
+        var signals = wr[i]['r'];
+        for (r in signals) {
+            obj[wr[i]['r'][r]['$'].b] = parseInt(wr[i]['r'][r]['$'].s, 10);
         }
 
-        fs.writeFile('./Input Data/input3.txt', JSON.stringify(dataSet), function (err) {
-            if (err) {
-                console.error('Crap happens');
-            }
-        });
+        dataSet.push(obj);
+        locations.push(l);
+        //console.log(dataSet);
+    }
 
-        fs.writeFile('./Input Data/locations_input3.txt', JSON.stringify(locations), function (err) {
-            if (err) {
-                console.error('Crap happens');
-            }
-        });
-    });
+    fs.writeFileSync('./Input Data/input3.txt', JSON.stringify(dataSet));
+
+    fs.writeFileSync('./Input Data/locations_input3.txt', JSON.stringify(locations));
 });
 
 // Read input file
@@ -72,6 +64,7 @@ async function main() {
         const collection = db.collection('fingerprintsLIFS');
         var res = [];
         var distances = [];
+        var tolerances = [];
         var aux;
         console.log(aux);
 
@@ -95,6 +88,7 @@ async function main() {
                 }
             } while(res[i].length == 0);
 
+            tolerances.push(tolerance);
             var j = 0;
             var minDist = 999;
             for (var x in res[i]) {
@@ -128,13 +122,27 @@ async function main() {
 
         var sum = 0;
         for (var i in distances) {
-            if (distances[i] < 20)
-                sum += distances[i];
+            sum += distances[i];
         }
         var avg = sum/distances.length;
+
         console.log("Media erorilor este: ", avg);
 
+        sum = 0;
+        for (var i in tolerances) {
+            sum += tolerances[i];
+        }
+        var avg = sum/(tolerances.length);
+
+        console.log("Media tolerantelor este: ", avg);
+
+        var file = fs.createWriteStream('./OutputData/distances.txt');
+        // write each value of the array on the file breaking line
+        distances.forEach(value => file.write(`${value}\n`));
+        file.end();
+
         client.close();
+        console.timeEnd('test');
     } catch (error) {
         console.log(error);
     }
