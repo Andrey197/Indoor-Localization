@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+// Parse a xml file and find the total number of APs
 public class MyDomParser {
 	public static ArrayList<String> APs = new ArrayList<String>();
 	public Connection con;
@@ -42,7 +43,7 @@ public class MyDomParser {
 	void createConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/fingerprintdb", "root", "spiderman");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/fingerprintdb", "root", "root");
 			
 			System.out.println("Database connection success!!");
 		} catch (ClassNotFoundException e) {

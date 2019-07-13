@@ -1,6 +1,7 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+// Structure for storing a sample location
 public class Marker {
 	private int id;
 	private String room;
@@ -20,6 +21,7 @@ public class Marker {
 		this.location = location;
 	}
 	
+	// Add a neighbor to the neighbor list
 	public void addNeighbour(int x) {
 		this.neighbours.add(x);
 	}

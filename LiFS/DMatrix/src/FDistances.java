@@ -23,19 +23,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+// Fingerprint Space
 public class FDistances {
 
 	public Fingerprint[][] fingeprints;
-	public double[][] Dprim;
-	public double[][] DprimRooms;
-	public int fingerprintsNum;
-	public int roomsFingerprintsNum;
-	public int corridorFingerprintsNum;
-	public int roomsNum;
+	public double[][] Dprim;				// Distances between all the fingerprints
+	public double[][] DprimRooms;			// Distances between fingerprints from rooms
+	public int fingerprintsNum;				// Total number of fingerprint
+	public int roomsFingerprintsNum;		// Number of fingerprint from rooms
+	public int corridorFingerprintsNum;		// Number of fingerprint from corridor
+	public int roomsNum;					// Rooms number
 	public int ids;
-	public ArrayList<Fingerprint> fs;
-	public int[] fingerprintRoom;   // store the room of every fingerprint
-	public int[] doorRoom;			// store the index of the door for every room
+	public ArrayList<Fingerprint> fs;		// Fingerprint list
+	public int[] fingerprintRoom;   		// Store the room of every fingerprint
+	public int[] doorRoom;					// Store the index of the door for every room
 	
 	// Find the number of fingerprints from xml file
 	public int countFingerprints(Document doc) {
@@ -288,8 +289,14 @@ public class FDistances {
 		}
 	}
 	
+	/*
+	 *  Get the room index for every fingerprint
+	 *  Obtained from clustering algorithm implementation in Octave
+	 */
 	public void findRooms() {
 		this.roomsNum = 0;
+		
+		// Path may differ
 		File file = new File("D:/LICENTA/MDS/output/clusters.txt");
 		
 		BufferedReader br;
@@ -312,6 +319,11 @@ public class FDistances {
 		} 
 	}
 	
+	/*
+	 *  Algorithm for finding doors
+	 *  Find the closest 2 fingerprints where one is from corridor 
+	 *  and the is from rooms
+	 */
 	public void findDoors() {
 		// Room with index 1 will be at index 0 of the array doorRoom
 		this.doorRoom = new int[this.roomsNum];
@@ -335,6 +347,7 @@ public class FDistances {
 		}
 	}
 	
+	// Used for testing the functions
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		FDistances parser = new FDistances();

@@ -1,9 +1,4 @@
-  
 % Determine if a graph is connected
-% Idea by Ed Scheinerman, circa 2006, 
-%         source: http://www.ams.jhu.edu/~ers/matgraph/
-%         routine: matgraph/@graph/isconnected.m
-%
 % INPUTS: adjacency matrix, nxn
 % OUTPUTS: Boolean variable, 0 or 1
 %
@@ -27,39 +22,3 @@ end
 
 S = true;
 if sum(x)<n; S = false; end
-
-
-% Alternative 1 ..........................................................
-% If the algebraic connectivity is > 0 then the graph is connected
-% a=algebraic_connectivity(adj);
-% S = false; if a>0; S = true; end
-
-% Alternative 2 ..........................................................
-% Uses the fact that multiplying the adj matrix to itself k times give the
-% number of ways to get from i to j in k steps. If the end of the
-% multiplication in the sum of all matrices there are 0 entries then the
-% graph is disconnected. Computationally intensive, but can be sped up by
-% the fact that in practice the diameter is very short compared to n, so it
-% will terminate in order of log(n)? steps.
-% function S=isconnected(el):
-%     
-%     S=false;
-%     
-%     adj=edgeL2adj(el);
-%     n=numnodes(adj); % number of nodes
-%     adjn=zeros(n);
-% 
-%     adji=adj;
-%     for i=1:n
-%         adjn=adjn+adji;
-%         adji=adji*adj;
-% 
-%         if length(find(adjn==0))==0
-%             S=true;
-%             return
-%         end
-%     end
-
-% Alternative 3 ............................................................
-% Find all connected components, if their number is 1, the graph is
-% connected. Use find_conn_comp(adj).

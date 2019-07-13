@@ -7,16 +7,15 @@ import java.util.Arrays;
 
 public class Distances {
 	public Marker[][] markers;
-	public Fingerprint[][] fingeprints;
 	public double[][] D;
 	public double[][] Dprim;
 	public int markersNum;
-	public int fingerprintsNum;
 	public int roomsNum;
 	public int[] doorRoom;
 	public int[] gridRoom;
 	public ArrayList<Marker> ms;
 	
+	// Building coordinates
 	private final static Point2D.Double topLeft = new Point2D.Double(44.435107, 26.047573);
     private final static Point2D.Double topRight = new Point2D.Double(44.435107, 26.047937);
     private final static Point2D.Double bottomLeft = new Point2D.Double(44.434851, 26.047573);
@@ -35,7 +34,7 @@ public class Distances {
         double angleLng = 0.0000001;
         double angleLat = 0.0000001;
         
-		
+		// Sample location from the floor plan from meter to meter
 		for (i = 0; i < markers.length; i++) {
 			for (j = 0; j < markers.length; j++) {
 				Point2D.Double latLng = new Point2D.Double(bottomLeft.getX() + stepLat * i - angleLat * j,
@@ -70,13 +69,10 @@ public class Distances {
 					markers[i][j] = m;
 				}
 				
+				// Remove samples from inaccessible areas
 				if (j == 7 && (i <= 1 || (i >= 3 && i <= 7) || (i >= 9 && i <= 10) || (i >= 13 && i <= 20))) {
-					//Marker m = new Marker(ids, i, j, '|');
-					//markers[i][j] = m;
 					markers[i][j] = null;
 				} else if (i >= 10 && i <= 20 && j >= 10 && j <= 20) {
-					//Marker m = new Marker(ids, i, j, '|');
-					//markers[i][j] = m;
 					markers[i][j] = null;
 				} else if (i == 9 && j <= 5) {
 					markers[i][j] = null;
@@ -105,7 +101,7 @@ public class Distances {
 			}
 		}
 		
-		// set doors
+		// Set doors
 		int x;
 		markers[11][23].setDoor(true);
 		//x = markers[12][23].getId();
@@ -139,6 +135,7 @@ public class Distances {
 		System.out.println();
 	}
 	
+	// Set room index for every location index
 	public void setRooms() {
 		this.gridRoom = new int[this.markersNum];
 		
@@ -151,6 +148,7 @@ public class Distances {
 		}
 	}
 	
+	// Verify if the markers are from the same room
 	public boolean sameRoom(Marker m1, Marker m2) {
 		if (m1 == null || m2 == null) {
 			return false;
@@ -163,6 +161,11 @@ public class Distances {
 		return false;
 	}
 	
+	/*
+	 * Store distances to neighbours
+	 * For up, down, left and right neighbours the distance is 1 meter
+	 * For diagonally neighbours, the distance is sqrt(2) - from the square diagonal formula
+	 */
 	public void addNeighbours() {
 		int i, j;
 		
@@ -200,6 +203,7 @@ public class Distances {
 		}
 	}
 	
+	// Used for finding the distances between every sampled locations
 	public void floydWarshall() {
 		int i, j ,k;
 		
@@ -214,6 +218,7 @@ public class Distances {
 		}
 	}
 	
+	// Write a matrix in a file
 	void writeMatrix(String filename, double[][] matrix) {
 	    try {
 	        BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
@@ -232,6 +237,7 @@ public class Distances {
 	    } catch (IOException e) {}
 	}
 	
+	// This main is for testing the functions
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Distances dis = new Distances();
@@ -249,23 +255,9 @@ public class Distances {
 			System.out.println();
 		}
 		
+		System.out.println(dis.ms.size());
+		
 		System.out.println(dis.ms.get(2).getLocation());
-		
-		/*for (i = 0; i < dis.D.length; i++) {
-			for (j = 0; j < dis.D.length; j++) {
-				if (dis.D[i][j] != 99999)
-					System.out.print(dis.D[i][j] + "-(i:" + i + " j:" + j + ") ");
-			}
-			System.out.println();
-		}*/
-		
-		/*for (i = 0; i < dis.D.length; i++) {
-			System.out.print(dis.D[0][i] + "-(i:0" + " j:" + i + ") ");
-		}*/
-		
-		/*for (i = 0; i < dis.D.length; i++) {
-			System.out.println(dis.D[i].length);
-		}*/
 		
 		dis.writeMatrix("distances.txt", dis.D);
 		

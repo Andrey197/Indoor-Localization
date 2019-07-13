@@ -1,6 +1,7 @@
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 
+// Structure for store a fingerprint
 public class Fingerprint {
 	private int id;
 	private String room;

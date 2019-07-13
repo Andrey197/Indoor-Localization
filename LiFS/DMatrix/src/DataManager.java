@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+// An instance of this class represent an entry in the database
 class Entry {
 	HashMap<String, Integer> fingerprint;
 	Point2D.Double location;
@@ -29,10 +31,10 @@ class Entry {
 }
 
 public class DataManager {
-	public Distances dis;
-	public FDistances parser;
-	public ArrayList<Entry> entries;
-	public HashMap<Integer, Integer> doorMap;
+	public Distances dis;							// Distances between sampled locations
+	public FDistances parser;						// Distances between fingerprints
+	public ArrayList<Entry> entries;				// Entries in database
+	public HashMap<Integer, Integer> doorMap;		// Mapping of the doors
 	public JSONArray ja;
 	
 	public DataManager() {
@@ -110,6 +112,11 @@ public class DataManager {
 		}
 	}
 	
+	
+	/*
+	 *  Door mapping algorithm
+	 *  Is known that we have only 3 doors
+	 */
 	public void mapDoors() {
 		this.doorMap = new HashMap<Integer, Integer>();
 		
@@ -203,8 +210,11 @@ public class DataManager {
 		entries.add(e);
 	}
 	
+	// Room mapping algorithm
 	public void mapRooms() {
+		// Sampled locations from rooms
 		ArrayList<ArrayList<Marker>> roomsP = new ArrayList<ArrayList<Marker>>();
+		// Fingerprints from rooms
 		ArrayList<ArrayList<Fingerprint>> roomsF = new ArrayList<ArrayList<Fingerprint>>();
 		
 		for (int i = 0; i < this.doorMap.size(); i++) {
@@ -245,7 +255,7 @@ public class DataManager {
 		}
 		System.out.println();*/
 		
-		// sort markers from every room from the closest to room door to the farest
+		// Sort markers from every room from the closest to room door to the farthest
 		for (int i = 0; i < roomsP.size(); i++) {
 			Collections.sort(roomsP.get(i), new Comparator<Marker>() {
 				
@@ -266,7 +276,7 @@ public class DataManager {
 		}
 
 		
-		// sort fingerprints from every room from the closest to room door to the farest
+		// Sort fingerprints from every room from the closest to room door to the farthest
 		for (int i = 0; i < roomsF.size(); i++) {
 			Collections.sort(roomsF.get(i), new Comparator<Fingerprint>() {
 				
@@ -313,6 +323,7 @@ public class DataManager {
 			
 	}
 	
+	// Corridor mapping algorithm
 	public void mapCorridor() {
 		ArrayList<Marker> corridorP = new ArrayList<Marker>();
 		ArrayList<Fingerprint> corridorF = new ArrayList<Fingerprint>();
@@ -462,6 +473,7 @@ public class DataManager {
 		}
 	}
 	
+	// Transform database entries in JSON objects
 	public void entriesToJS() {
 		
 		for (int i = 0; i < this.entries.size(); i++) {
@@ -482,8 +494,8 @@ public class DataManager {
 		System.out.println(ja.size());
 	}
 	
-	public void writeJS() {
-		// writing JSON to file:"JSONExample.json" in cwd 
+	// Write JSON to file
+	public void writeJS() { 
         PrintWriter pw;
 		try {
 			pw = new PrintWriter("D:/LICENTA/DateDB/Date LIFS/LIFS.json");
@@ -500,6 +512,8 @@ public class DataManager {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		long startTime = System.nanoTime();
+		
 		DataManager data = new DataManager();
 		
 		data.mapDoors();
@@ -507,6 +521,11 @@ public class DataManager {
 		data.mapCorridor();
 		data.entriesToJS();
 		data.writeJS();
+
+		long endTime   = System.nanoTime();
+		long totalTime = endTime - startTime;
+		long durationInMillis = TimeUnit.NANOSECONDS.toMillis(totalTime);
+		System.out.println(durationInMillis);
 	}
 
 }

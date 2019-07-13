@@ -2,10 +2,10 @@
 pkg load statistics
 clear; close all; clc;
 
-% Clustering Set #1 ---------------------------------------------------------------------
+% Clustering Set ---------------------------------------------------------------------
 
 % Loading the data.
-fprintf('Loading the data set #1...\n');
+fprintf('Loading the data set...\n');
 
 D = dlmread('output/roomsD.txt', ',', 0, 0);
   
@@ -15,16 +15,16 @@ D = dlmread('output/roomsD.txt', ',', 0, 0);
 fprintf('Plotting the data set #1...\n');
 subplot(1, 2, 1);
 plot(Y(:, 1), Y(:, 2), 'k+','LineWidth', 1, 'MarkerSize', 7);
-title('Training Set #1');
+title('Training Set');
 
 % Training K-Means.
-fprintf('Training K-Means for data set #1...\n');
+fprintf('Training K-Means for data set...\n');
 K = 3; % Number of centroids.
 max_iterations = 30; % How many iterations we will do to find optimal centroids positions.
 [centroids, closest_centroids_ids] = k_means_train(Y, K, max_iterations);
 
 % Plotting clustered data.
-fprintf('Plotting clustered data for data set #1...\n');
+fprintf('Plotting clustered data for data set...\n');
 subplot(1, 2, 2);
 for k=1:K
     % Plotting the cluster.
@@ -37,7 +37,7 @@ for k=1:K
     plot(centroid(:, 1), centroid(:, 2), 'ko', 'MarkerFaceColor', 'r', 'MarkerSize', 8);
     hold on;
 end
-title('Clustered Set #1');
+title('Clustered Set');
 
 f = fopen("output/clusters.txt", "w");
 for i = 1:length(closest_centroids_ids)
